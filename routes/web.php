@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// routes to home
 Route::get('/', function () {
-    return view('welcome');
+    return view('posts');
 });
+
+// routes to a blog post
+Route::get('posts/{post}', function ($slug) {
+    // if file doesn't exist (404)
+    if (! file_exists($path = __DIR__ ."/../resources/posts/{$slug}.html")) {
+        abort(404);
+    }
+
+    // remebers cache for 20 minutes
+    $post = cache()->remember("posts.{$slug}", now() -> addMinutes(20), fn() => file_get_contents($path));
+
+    // returns post view
+    return view('post', ['post'=> $post,]);
+
+// constraint
+})->where('posts', '[A-z_\-]+');
