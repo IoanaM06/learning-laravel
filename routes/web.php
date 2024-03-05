@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Post;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
+use Symfony\Component\Yaml\Yaml;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,21 +18,31 @@ use Illuminate\Support\Facades\Route;
 
 // routes to home
 Route::get('/', function () {
-    return view('posts');
-});
+    $files = File::files(resource_path("posts"));
+    $posts = [];
 
-// routes to a blog post
-Route::get('posts/{post}', function ($slug) {
-    // if file doesn't exist (404)
-    if (! file_exists($path = __DIR__ ."/../resources/posts/{$slug}.html")) {
-        abort(404);
+    foreach ($files as $file) {
+        $document = YamlFrontMatter::parseFile($file);
+        $posts[] = new Post(
+            $document->title, 
+            $document->excerpt,
+            $document->date,
+            $document->body(),
+        );
     }
 
-    // remebers cache for 20 minutes
-    $post = cache()->remember("posts.{$slug}", now() -> addMinutes(20), fn() => file_get_contents($path));
+    dd($posts);
+    
+    // // Returns the 'posts' view along with the array of posts data.
+    // return view('posts', ['posts' => Post::all()]);
+});
 
-    // returns post view
-    return view('post', ['post'=> $post,]);
+// Find a post by its slug and pass it to its view, "post"
+Route::get('posts/{post}', function ($slug) {
+    // find a post
+    $post = Post::find($slug);
+    // return view of post
+    return view("post", ['post' => $post]);
 
 // constraint
 })->where('posts', '[A-z_\-]+');
