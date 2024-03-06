@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
-use Spatie\YamlFrontMatter\YamlFrontMatter;
-use Symfony\Component\Yaml\Yaml;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,31 +16,13 @@ use Symfony\Component\Yaml\Yaml;
 
 // routes to home
 Route::get('/', function () {
-    $files = File::files(resource_path("posts"));
-    $posts = [];
-
-    foreach ($files as $file) {
-        $document = YamlFrontMatter::parseFile($file);
-        $posts[] = new Post(
-            $document->title, 
-            $document->excerpt,
-            $document->date,
-            $document->body(),
-        );
-    }
-
-    dd($posts);
-    
-    // // Returns the 'posts' view along with the array of posts data.
-    // return view('posts', ['posts' => Post::all()]);
+    // Returns the 'posts' view along with the array of posts data.
+    return view('posts', ['posts' => Post::all()]);
 });
 
 // Find a post by its slug and pass it to its view, "post"
 Route::get('posts/{post}', function ($slug) {
-    // find a post
     $post = Post::find($slug);
-    // return view of post
     return view("post", ['post' => $post]);
 
-// constraint
 })->where('posts', '[A-z_\-]+');

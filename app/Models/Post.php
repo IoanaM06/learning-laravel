@@ -1,35 +1,52 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\File;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 
-class Post {
+class Post
+{
+    // varibale declaration
     public $title;
     public $excerpt;
     public $date;
     public $body;
+    public $slug;
 
-    public function __construct($title, $excerpt, $date, $body) {
+    // constructor takes metadata for a post
+    public function __construct($title, $excerpt, $date, $body, $slug)
+    {
         $this->title = $title;
-        $this->excerpt =$excerpt;
+        $this->excerpt = $excerpt;
         $this->date = $date;
         $this->body = $body;
+        $this->slug = $slug;
     }
 
-    public static function all() {
-        $files = File::files(resource_path("posts/"));
-        return array_map(fn($file) => $file->getContents(), $files);
+    // Retrieves and processes all posts from the "posts" directory.
+    public static function all()
+    {
+        // Finds all of the files in the post direcory
+        return collect(File::files(resource_path("posts")))
+            // maps over file and turns it into a document
+            ->map(fn($file) => YamlFrontMatter::parseFile($file))
+            // maps over medidata in the document that was just mapped
+            ->map(fn($document) => new Post(
+                $document->title,
+                $document->excerpt,
+                $document->date,
+                $document->body(),
+                $document->slug,
+            )
+            );
     }
-    // finds a post according to the slug
-    public static function find($slug) {
-        // if file doesn't exist (404)
-        if (! file_exists($path = resource_path("posts/{$slug}.html"))) {
-            throw new ModelNotFoundException();
-        }
 
-        // returns the post
-        return cache()->remember("posts.{$slug}", now() -> addMinutes(20), fn() => file_get_contents($path));
+    // finds a specific post according to it's slug
+    public static function find($slug)
+    {
+        return static::all()->firstWhere("slug", $slug);
     }
 
 }

@@ -8,9 +8,14 @@
     <script src="/app.js"></script>
 </head>
 <body>
-    <?php foreach($posts as $post) : ?>
+    <?php foreach ($posts as $post): ?>
         <article>
-            <?= $post; ?>
+            <h1>
+                <a href="/posts/<?= $post->slug; ?>"><?= $post->title; ?></a>
+            </h1>
+            <div>
+                <p><?= $post->excerpt; ?></p>
+            </div>
         </article>
     <?php endforeach; ?>
 </body>
