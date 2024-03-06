@@ -30,17 +30,18 @@ class Post
     {
         return cache()->rememberForever("posts.all", function () {
             return collect(File::files(resource_path("posts")))
-            // maps over file and turns it into a document
-            ->map(fn($file) => YamlFrontMatter::parseFile($file))
-            // maps over medidata in the document that was just mapped
-            ->map(fn($document) => new Post(
-                $document->title,
-                $document->excerpt,
-                $document->date,
-                $document->body(),
-                $document->slug,
-            ))
-            ->sortByDesc('date');
+                // maps over file and turns it into a document
+                ->map(fn($file) => YamlFrontMatter::parseFile($file))
+                // maps over medidata in the document that was just mapped
+                ->map(fn($document) => new Post(
+                    $document->title,
+                    $document->excerpt,
+                    $document->date,
+                    $document->body(),
+                    $document->slug,
+                )
+                )
+                ->sortByDesc('date');
         });
     }
 
@@ -54,7 +55,7 @@ class Post
     public static function findOrFail($slug)
     {
         $post = static::find($slug);
-        if (! $post) {
+        if (!$post) {
             throw new ModelNotFoundException();
         }
 
