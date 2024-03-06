@@ -28,8 +28,8 @@ class Post
     // Retrieves and processes all posts from the "posts" directory.
     public static function all()
     {
-        // Finds all of the files in the post direcory
-        return collect(File::files(resource_path("posts")))
+        return cache()->rememberForever("posts.all", function () {
+            return collect(File::files(resource_path("posts")))
             // maps over file and turns it into a document
             ->map(fn($file) => YamlFrontMatter::parseFile($file))
             // maps over medidata in the document that was just mapped
@@ -39,8 +39,9 @@ class Post
                 $document->date,
                 $document->body(),
                 $document->slug,
-            )
-            );
+            ))
+            ->sortByDesc('date');
+        });
     }
 
     // finds a specific post according to it's slug
