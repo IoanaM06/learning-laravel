@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Models\Post;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +14,7 @@ use App\Models\Post;
 |
 */
 
-// routes to home
+// Routes to home
 Route::get('/', function () {
     // Returns the 'posts' view along with the array of posts data.
     return view('posts', ['posts' => Post::all()]);
@@ -22,6 +22,14 @@ Route::get('/', function () {
 
 // Find a post by its slug and pass it to its view, "post"
 Route::get('posts/{post:slug}', function (Post $post) {
-    return view("post", ['post' => $post]);
+    return view("post", [
+        'post' => $post
+    ]);
+});
 
+// Finds posts by category
+Route::get('categories/{category:slug}', function (Category $category) {
+    return view('posts', [
+        'posts' => $category->posts
+    ]);
 });

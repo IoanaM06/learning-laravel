@@ -10,9 +10,10 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+    { //make sure you update $fillable in Post when you add something in
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id');
             $table->string('slug')->unique();
             $table->string('title');
             $table->text('excerpt');
