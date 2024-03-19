@@ -18,7 +18,7 @@ use App\Models\Category;
 Route::get('/', function () {
     
     // Returns the 'posts' view along with the array of posts data.
-    return view('posts', ['posts' => Post::with('category')->get()]);
+    return view('posts', ['posts' => Post::latest()->with('category')->get()]);
 });
 
 // Find a post by its slug and pass it to its view, "post"
