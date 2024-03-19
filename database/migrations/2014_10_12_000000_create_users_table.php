@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // when you update the table, don't forget to update the fillables in Post.php
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->String('username')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
