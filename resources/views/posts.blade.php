@@ -21,5 +21,4 @@
     @endif
 
 </main>
->>>>>>> b0e2e42 (finished up to 33)
 </x-layout>
