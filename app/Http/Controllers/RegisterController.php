@@ -1,16 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\User;
-
 class RegisterController extends Controller
 {
     public function create()
     {
         return view('register.create');
     }
-
     public function store()
     {
         $attributes = request()->validate([
@@ -19,11 +15,9 @@ class RegisterController extends Controller
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:7|max:255',
         ]);
-        
-        // $attributes['password'] = bcrypt($attributes['password']);
 
         User::create($attributes);
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Your account has been successfully created.');
     }
 }
