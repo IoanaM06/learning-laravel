@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Dotenv\Exception\ValidationException;
 
 class SessionsController extends Controller
 {
@@ -21,15 +21,15 @@ class SessionsController extends Controller
             'password' => 'required' 
         ]);
 
-        if (auth()->attempt($attributes)) {
-            return redirect('/')->with('success', "Welcome Back!");
-        } 
-
-        return back()
-            ->withInput()
-            ->withErrors([
-                'email' => 'Your provided credentials could not be verified.',
-                'password' => 'Your password is invalid.'
+        if (! auth()->attempt($attributes)) {
+            throw ValidationException::withMessages([
+                'email' => 'Your provided credentials could not be verified.'
             ]);
+        }
+
+        session()->regenerate();
+
+        return redirect('/')->with('success', 'Welcome Back!');
+    
     }
 }
