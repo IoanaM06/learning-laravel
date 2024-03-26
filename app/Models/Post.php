@@ -11,8 +11,6 @@ class Post extends Model
 
     protected $guarded = [];
 
-    protected $fillable = ["title", "slug", "excerpt", "body", "category_id", "user_id", "username"];
-
     // don't forget to update PostContoller to accept anything that is added
     public function scopeFilter($query, array $filters)
     {
