@@ -22,5 +22,13 @@ class DatabaseSeeder extends Seeder
         Post::factory(5)->create([
             'user_id' => $user->id
         ]);
+
+        for ($i = 0; $i < 10; $i++) {
+            $user = User::factory()->create();
+
+            Post::factory(2)->create([
+                'user_id' => $user->id
+            ]);
+        }
     }
 }
