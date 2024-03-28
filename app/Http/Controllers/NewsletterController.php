@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\MailchimpNewsletter;
 use App\Services\Newsletter;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -20,7 +21,6 @@ class NewsletterController extends Controller
             ]);
         }
 
-        return redirect('/')
-            ->with('success', 'You are now signed up for our newsletter!');
+        return redirect('/')->with('success', 'You are now signed up for our newsletter!');
     }
 }
